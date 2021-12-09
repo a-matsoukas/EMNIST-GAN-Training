@@ -1,5 +1,8 @@
 """
+This module contains starter code for initializing a GAN with random weights.
 
+The contents of this file have been incorporated in the file called
+basic_gan_trainer.py, rendering this file redundant.
 """
 import numpy as np
 
