@@ -13,6 +13,12 @@ class BasicGANTrainer:
         """
         
         """
+        self._current_disc_value = 0
+        self._current_gen_value = 0
+
+        self._disc_value_array = np.array([])
+        self._gen_value_array = np.array([])
+
         self._lambda_Theta4 = .00005
         self._lambda_Theta3 = .0005
         self._lambda_Theta2 = .005
@@ -51,6 +57,34 @@ class BasicGANTrainer:
         self._Gamma3 = np.zeros(self.Phi3.shape)
         self._Gamma4 = np.zeros(self.Phi4.shape)
 
+    @property
+    def current_disc_value(self):
+        """
+        
+        """
+        return self._current_disc_value
+
+    @property
+    def current_gen_value(self):
+        """
+        
+        """
+        return self._current_gen_value
+
+    @property
+    def disc_value_array(self):
+        """
+        
+        """
+        return self._disc_value_array
+
+    @property
+    def gen_value_array(self):
+        """
+        
+        """
+        return self._gen_value_array
+    
     @property
     def Din_bias(self):
         """
@@ -239,16 +273,16 @@ class BasicGANTrainer:
         """
         self._Din_bias = np.insert(train_ex, 0, 1, axis=0)
 
-        D1 = relu(np.matmul(self.Theta1, self.Din_bias))
+        D1 = relu(self.Theta1 @ self.Din_bias)
         self._D1_bias = np.insert(D1, 0, 1, axis=0)
 
-        D2 = relu(np.matmul(self.Theta2, self.D1_bias))
+        D2 = relu(self.Theta2 @ self.D1_bias)
         self._D2_bias = np.insert(D2, 0, 1, axis=0)
 
-        D3 = relu(np.matmul(self.Theta3, self.D2_bias))
+        D3 = relu(self.Theta3 @ self.D2_bias)
         self._D3_bias = np.insert(D3, 0, 1, axis=0)
 
-        Dout_temp = sigmoid(np.matmul(self.Theta4, self.D3_bias))
+        Dout_temp = sigmoid(self.Theta4 @ self.D3_bias)
         self._Dout = np.maximum(np.minimum(Dout_temp, .9999), .0001)
 
         return self.Dout
@@ -259,16 +293,16 @@ class BasicGANTrainer:
         """
         self._Gin_bias = np.insert(train_ex, 0, 1, axis=0)
 
-        G1 = relu(np.matmul(self.Phi1, self.Gin_bias))
+        G1 = relu(self.Phi1 @ self.Gin_bias)
         self._G1_bias = np.insert(G1, 0, 1, axis=0)
 
-        G2 = relu(np.matmul(self.Phi2, self.G1_bias))
+        G2 = relu(self.Phi2 @ self.G1_bias)
         self._G2_bias = np.insert(G2, 0, 1, axis=0)
 
-        G3 = relu(np.matmul(self.Phi3, self.G2_bias))
+        G3 = relu(self.Phi3 @ self.G2_bias)
         self._G3_bias = np.insert(G3, 0, 1, axis=0)
 
-        self._Gout = (sigmoid(np.matmul(self.Phi4, self.G3_bias)) * 255).astype(int)
+        self._Gout = (sigmoid(self.Phi4 @ self.G3_bias) * 255).astype(int)
 
         return self.Gout
 
@@ -277,15 +311,15 @@ class BasicGANTrainer:
         
         """
         dV_dOut = ((label / self.Dout) - ((1 - label) / (1 - self.Dout))) / batch_size
-        deltaOut = dV_dOut * sigmoid_prime(np.matmul(self.Theta4, self.D3_bias))
-        delta3 = np.matmul(self.Theta4.T, deltaOut)[1:] * relu_prime(np.matmul(self.Theta3, self.D2_bias))
-        delta2 = np.matmul(self.Theta3.T, delta3)[1:] * relu_prime(np.matmul(self.Theta2, self.D1_bias))
-        delta1 = np.matmul(self.Theta2.T, delta2)[1:] * relu_prime(np.matmul(self.Theta1, self.Din_bias))
+        deltaOut = dV_dOut * sigmoid_prime(self.Theta4 @ self.D3_bias)
+        delta3 = (self.Theta4.T @ deltaOut)[1:] * relu_prime(self.Theta3 @ self.D2_bias)
+        delta2 = (self.Theta3.T @ delta3)[1:] * relu_prime(self.Theta2 @ self.D1_bias)
+        delta1 = (self.Theta2.T @ delta2)[1:] * relu_prime(self.Theta1 @ self.Din_bias)
         
-        dV_dTheta4 = np.matmul(deltaOut, self.D3_bias.T)
-        dV_dTheta3 = np.matmul(delta3, self.D2_bias.T)
-        dV_dTheta2 = np.matmul(delta2, self.D1_bias.T)
-        dV_dTheta1 = np.matmul(delta1, self.Din_bias.T)
+        dV_dTheta4 = deltaOut @ self.D3_bias.T
+        dV_dTheta3 = delta3 @ self.D2_bias.T
+        dV_dTheta2 = delta2 @ self.D1_bias.T
+        dV_dTheta1 = delta1 @ self.Din_bias.T
 
         self._Delta1 = self.Delta1 + dV_dTheta1
         self._Delta2 = self.Delta2 + dV_dTheta2
@@ -297,20 +331,20 @@ class BasicGANTrainer:
         
         """
         dV_dOut = (1 / self.Dout) / batch_size
-        deltaOut = dV_dOut * sigmoid_prime(np.matmul(self.Theta4, self.D3_bias))
-        delta3 = np.matmul(self.Theta4.T, deltaOut)[1:] * relu_prime(np.matmul(self.Theta3, self.D2_bias))
-        delta2 = np.matmul(self.Theta3.T, delta3)[1:] * relu_prime(np.matmul(self.Theta2, self.D1_bias))
-        delta1 = np.matmul(self.Theta2.T, delta2)[1:] * relu_prime(np.matmul(self.Theta1, self.Din_bias))
+        deltaOut = dV_dOut * sigmoid_prime(self.Theta4 @ self.D3_bias)
+        delta3 = (self.Theta4.T @ deltaOut)[1:] * relu_prime(self.Theta3 @ self.D2_bias)
+        delta2 = (self.Theta3.T @ delta3)[1:] * relu_prime(self.Theta2 @ self.D1_bias)
+        delta1 = (self.Theta2.T @ delta2)[1:] * relu_prime(self.Theta1 @ self.Din_bias)
 
-        gammaOut = np.matmul(self.Theta1.T, delta1)[1:] * 255 * sigmoid_prime(np.matmul(self.Phi4, self.G3_bias))
-        gamma3 = np.matmul(self.Phi4.T, gammaOut)[1:] * relu_prime(np.matmul(self.Phi3, self.G2_bias))
-        gamma2 = np.matmul(self.Phi3.T, gamma3)[1:] * relu_prime(np.matmul(self.Phi2, self.G1_bias))
-        gamma1 = np.matmul(self.Phi2.T, gamma2)[1:] * relu_prime(np.matmul(self.Phi1, self.Gin_bias))
+        gammaOut = (self.Theta1.T @ delta1)[1:] * 255 * sigmoid_prime(self.Phi4 @ self.G3_bias)
+        gamma3 = (self.Phi4.T @ gammaOut)[1:] * relu_prime(self.Phi3 @ self.G2_bias)
+        gamma2 = (self.Phi3.T @ gamma3)[1:] * relu_prime(self.Phi2 @ self.G1_bias)
+        gamma1 = (self.Phi2.T @ gamma2)[1:] * relu_prime(self.Phi1 @ self.Gin_bias)
 
-        dV_dPhi4 = np.matmul(gammaOut, self.G3_bias.T)
-        dV_dPhi3 = np.matmul(gamma3, self.G2_bias.T)
-        dV_dPhi2 = np.matmul(gamma2, self.G1_bias.T)
-        dV_dPhi1 = np.matmul(gamma1, self.Gin_bias.T)
+        dV_dPhi4 = gammaOut @ self.G3_bias.T
+        dV_dPhi3 = gamma3 @ self.G2_bias.T
+        dV_dPhi2 = gamma2 @ self.G1_bias.T
+        dV_dPhi1 = gamma1 @ self.Gin_bias.T
         
         self._Gamma1 = self.Gamma1 + dV_dPhi1
         self._Gamma2 = self.Gamma2 + dV_dPhi2
@@ -345,3 +379,31 @@ class BasicGANTrainer:
         self._Gamma3 = np.zeros(self.Phi3.shape)
         self._Gamma4 = np.zeros(self.Phi4.shape)
 
+    def add_to_disc_value(self, label):
+        """
+        
+        """
+        if label == 0:
+            self._current_disc_value = self.current_disc_value + np.log(1 - self.Dout)
+        else:
+            self._current_disc_value = self.current_disc_value + np.log(self.Dout)
+
+    def add_to_gen_value(self):
+        """
+        
+        """
+        self._current_gen_value = np.log(self.Dout)
+
+    def update_disc_value_array(self, batch_size):
+        """
+        
+        """
+        self._disc_value_array = np.append(self.disc_value_array, self.current_disc_value / batch_size)
+        self._current_disc_value = 0
+
+    def update_gen_value_array(self, batch_size):
+        """
+        
+        """
+        self._gen_value_array = np.append(self.gen_value_array, self.current_gen_value / batch_size)
+        self._current_gen_value = 0
