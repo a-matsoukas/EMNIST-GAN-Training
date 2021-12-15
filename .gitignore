@@ -112,6 +112,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# EMNIST Data Files
 emnistdata/EMNIST/raw/gzip.zip
 emnistdata/EMNIST/raw/emnist-mnist-train-labels-idx1-ubyte
 emnistdata/EMNIST/raw/emnist-mnist-train-images-idx3-ubyte
@@ -137,4 +139,6 @@ emnistdata/EMNIST/raw/emnist-balanced-train-labels-idx1-ubyte
 emnistdata/EMNIST/raw/emnist-balanced-train-images-idx3-ubyte
 emnistdata/EMNIST/raw/emnist-balanced-test-labels-idx1-ubyte
 emnistdata/EMNIST/raw/emnist-balanced-test-images-idx3-ubyte
+
+# Redundant Starter Code
 gan_starter_code.py
