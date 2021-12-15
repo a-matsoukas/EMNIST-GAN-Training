@@ -112,7 +112,7 @@ def load_disc_test_data(digit):
 
     return test_data_digit
 
-def generator_input(mu=0, sigma=1):
+def generator_input(mu=0, sigma=1, dims=(100,1)):
     """
     Generate random noise to pass through the generator from a normal
     distribution with default mean of 0 and default st. dev. of 1.
@@ -125,7 +125,7 @@ def generator_input(mu=0, sigma=1):
     Returns:
         a 100 x 1 numpy array sampled from the defined distribution
     """
-    return np.random.normal(mu, sigma, size=(100,1))
+    return np.random.normal(mu, sigma, size=dims)
 
 def plot_image(data_vector):
     """
@@ -139,7 +139,7 @@ def plot_image(data_vector):
     plt.axis('off')
 
     # display the image in grayscale after reshaping it back to 28 x 28
-    plt.imshow(np.reshape(data_vector, (28,28)), cmap='gray')
+    plt.imshow(np.reshape(data_vector, (28,28)), cmap='gray', vmin=0, vmax=255)
 
 def plot_subplot_images(data_matrix, height, width, fig_size=(10,5)):
     """
@@ -173,23 +173,39 @@ def plot_subplot_images(data_matrix, height, width, fig_size=(10,5)):
         plot_image(data_matrix[image_indeces[image_num]][np.newaxis].T)
     plt.show()
 
-def plot_value_functions(trainer):
+def plot_disc_value(trainer):
     """
-    
-    """
-    f, (ax1, ax2) = plt.subplots(1, 2)
-    
-    disc_y = trainer.disc_value_array
-    disc_x = list(range(1, disc_y.shape[0] + 1))
+    Create a plot for the discriminator value as a function of training batch.
 
-    gen_y = trainer.gen_value_array
-    gen_x = list(range(1, gen_y.shape[0] + 1))
+    Args:
+        trainer: an initialized GAN trainer
+    Returns:
+        No Return Value
+    """
+    y_data = trainer.disc_value_array
+    x_data = list(range(1, y_data.shape[0] + 1))
     
-    ax1.plot(disc_x, disc_y)
-    ax1.set_title('Discriminator Value')
-    ax1.set_xlabel('Batch Number')
-    ax1.set_ylabel('Value Function')
+    plt.plot(x_data, y_data)
+    plt.xlabel("Batch Number")
+    plt.ylabel("Magnitude")
+    plt.title("Discriminator Value Function over Training Period")
+    plt.show()
+
+def plot_gen_value(trainer):
+    """
+    Create a plot for the generator value as a function of training batch.
+
+    Args:
+        trainer: an initialized GAN trainer
+    Returns:
+        No Return Value
+    """
+    y_data = trainer.gen_value_array
+    x_data = list(range(1, y_data.shape[0] + 1))
     
-    ax2.plot(gen_x, gen_y)
-    ax2.set_title('Generator Value')
-    ax2.set_xlabel('Batch Number')
+    plt.plot(x_data, y_data)
+    plt.xlabel("Batch Number")
+    plt.ylabel("Magnitude")
+    plt.title("Generator Value Function over Training Period")
+    plt.show()
+
