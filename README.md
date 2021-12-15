@@ -12,10 +12,11 @@ Each layer of the GAN uses a leaky ReLU activation function, with an alpha value
 
 
 ### Training Details
-The generator is trained to replicate the digit 0 from the EMNIST digits dataset. Some of the training examples are shown below. The digit that the generator is trained on can be changed in the training notebook, but it can only be trained on one digit at a time. 
+The generator is trained to replicate the digit 0 from the EMNIST digits dataset \[1\]. Some of the training examples are shown below. The digit that the generator is trained on can be changed in the training notebook, but it can only be trained on one digit at a time. 
 
 ![image](/readme_images/train_data.png)
 
+\[1\]Cohen, G., Afshar, S., Tapson, J., & van Schaik, A. (2017). EMNIST: an extension of MNIST to handwritten letters.
 
 ### Results
 The following images are generated images after training the GAN for 1 epoch, 60 epochs, and 120 epochs.
