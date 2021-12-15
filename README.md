@@ -11,6 +11,7 @@ Each layer of the GAN uses a leaky ReLU activation function, with an alpha value
 
 ### Training Details
 The generator is trained to replicate the digit 0 from the EMNIST digits dataset. Some of the training examples are shown below. The digit that the generator is trained on can be changed in the training notebook, but it can only be trained on one digit at a time. 
+
 ![image](/readme_images/train_data.png)
 
 ### Results
@@ -22,3 +23,13 @@ To run this code, the following Python libraries are required:
 - matplotlib.pyplot
 - torchvision
 - torchvision.transforms
+
+**NOTE: Due to GitHub file size constraints, I am unable to push the folder with the EMNIST data to GitHub. When running this code for the first time, you must navigate to ``helper_functions.py`` and edit the functions called ``load_disc_train_data`` and ``load_disc_test_data``.**
+
+**``load_disc_train_data``:**
+In the following line, set the download parameter to true. ``train_set = torchvision.datasets.EMNIST(root='./emnistdata', split='digits', train=True, download=False, transform=transforms.ToTensor())``
+
+**``load_disc_test_data``:**
+In the following line, set the download parameter to true. ``test_set = torchvision.datasets.EMNIST(root='./emnistdata', split='digits', train=False, download=False,transform=transforms.ToTensor())``
+
+After the data is successfully downloaded by running the main training notebook (you should see a folder called emnistdata appear in your directory), you can go back and set these parameters to false to avoid downloading the data every time you run the notebook.
