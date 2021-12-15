@@ -16,7 +16,7 @@ The generator is trained to replicate the digit 0 from the EMNIST digits dataset
 
 ![image](/readme_images/train_data.png)
 
-\[1\]Cohen, G., Afshar, S., Tapson, J., & van Schaik, A. (2017). EMNIST: an extension of MNIST to handwritten letters.
+\[1\] Cohen, G., Afshar, S., Tapson, J., & van Schaik, A. (2017). EMNIST: an extension of MNIST to handwritten letters.
 
 ### Results
 The following images are generated images after training the GAN for 1 epoch, 60 epochs, and 120 epochs.
