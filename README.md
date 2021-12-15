@@ -23,17 +23,17 @@ The following images are generated images after training the GAN for 1 epoch, 60
 
 1 Epoch:
 
-![1_epoch](/readme_images/1epoch.png)
+![1_epoch](/readme_images/1epoch_im.png)
 
 
 60 Epochs:
 
-![60_epoch](/readme_images/60epoch.png)
+![60_epoch](/readme_images/60epoch_im.png)
 
 
 120 Epochs:
 
-![120_epochs](/readme_images/120epoch.png)
+![120_epochs](/readme_images/120epoch_im.png)
 
 
 ### Necessary Libraries
