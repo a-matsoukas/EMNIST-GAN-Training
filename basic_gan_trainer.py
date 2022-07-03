@@ -135,16 +135,16 @@ class BasicGANTrainer:
         self._clip_grad = .1
 
         # Layer-specific learning rates
-        self._lambda_Theta4 = .000001
-        self._lambda_Theta3 = .00001
-        self._lambda_Theta2 = .0001
-        self._lambda_Theta1 = .0001
+        self._lambda_Theta4 = .00000005
+        self._lambda_Theta3 = .0000005
+        self._lambda_Theta2 = .000005
+        self._lambda_Theta1 = .000005
 
-        self._lambda_Phi5 = .000001
-        self._lambda_Phi4 = .000001
-        self._lambda_Phi3 = .00001
-        self._lambda_Phi2 = .0001
-        self._lambda_Phi1 = .0001
+        self._lambda_Phi5 = .000005
+        self._lambda_Phi4 = .000005
+        self._lambda_Phi3 = .00005
+        self._lambda_Phi2 = .0005
+        self._lambda_Phi1 = .0005
 
         # Setup disc. layers and random weights
         self._Din_bias = None
