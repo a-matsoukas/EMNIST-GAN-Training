@@ -122,6 +122,3 @@ emnistdata/EMNIST/raw/emnist-digits-test-images-idx3-ubyte
 
 # Redundant Starter Code
 gan_starter_code.py
-
-# Saved Trainer Configurations
-*.npz
